@@ -9,6 +9,16 @@ public class PeopleDTO {
 
     private String telephone;
 
+    private String tgLink;
+
+    public String getTgLink() {
+        return tgLink;
+    }
+
+    public void setTgLink(String tgLink) {
+        this.tgLink = tgLink;
+    }
+
     public String getLogin() {
         return login;
     }

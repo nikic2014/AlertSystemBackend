@@ -42,7 +42,7 @@ public class JWTFilter extends OncePerRequestFilter {
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         response.setHeader("Access-Control-Allow-Credentials", "true");
 
-        if (request.getRequestURI().equals("/auth/login") || request.getRequestURI().equals("/auth/register")) {
+        if (request.getRequestURI().equals("/auth/login") || request.getRequestURI().equals("/auth/register") || request.getRequestURI().equals("/bot/authProject")) {
             filterChain.doFilter(request, response);
             return;
         }

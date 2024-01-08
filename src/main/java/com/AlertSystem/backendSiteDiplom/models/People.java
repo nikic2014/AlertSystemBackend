@@ -22,6 +22,16 @@ public class People {
     @Column(name = "telephone")
     private String telephone;
 
+    @Column(name = "tgLink")
+    private String tgLink;
+
+    public String getTgLink() {
+        return tgLink;
+    }
+
+    public void setTgLink(String tgLink) {
+        this.tgLink = tgLink;
+    }
     public People(){};
 
     public int getId() {
