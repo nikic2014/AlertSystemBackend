@@ -9,6 +9,7 @@ import com.AlertSystem.backendSiteDiplom.services.PeopleInProjectService;
 import com.AlertSystem.backendSiteDiplom.services.PeopleService;
 import com.AlertSystem.backendSiteDiplom.services.ProjectService;
 import com.AlertSystem.backendSiteDiplom.util.JWTUtil;
+import com.AlertSystem.backendSiteDiplom.util.MyLogger;
 import com.google.gson.Gson;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,15 +25,17 @@ public class ProjectController {
     private final PeopleInProjectService peopleInProjectService;
     private final PeopleService peopleService;
     private final JWTUtil jwtUtil;
+    private final MyLogger myLogger;
 
     public ProjectController(ProjectService projectService,
                              PeopleInProjectService peopleInProjectService,
                              PeopleService peopleService,
-                             JWTUtil jwtUtil) {
+                             JWTUtil jwtUtil, MyLogger myLogger) {
         this.projectService = projectService;
         this.peopleInProjectService = peopleInProjectService;
         this.peopleService = peopleService;
         this.jwtUtil = jwtUtil;
+        this.myLogger = myLogger;
     }
 
     @PostMapping("/createProject")
@@ -42,9 +45,13 @@ public class ProjectController {
         project.setDescription(projectDTO.getProjectDescription());
         projectService.saveProject(project);
 
+        String messageForLogs = "Пользователи: ";
         for (var i :projectDTO.getParticipants()) {
-            System.out.println(i.getParticipantId() + " " + i.getParticipantRole());
+            messageForLogs += i.getParticipantId() + ", ";
+//            System.out.println(i.getParticipantId() + " " + i.getParticipantRole());
         }
+        messageForLogs += " добавлены в новый проект " +project.getId();
+        myLogger.sendInfo(messageForLogs);
 
         for (var i :projectDTO.getParticipants()) {
             PeopleInProject peopleInProject = new PeopleInProject();
@@ -130,6 +137,10 @@ public class ProjectController {
         People people = peopleService.getByLogin(username);
         PeopleInProjectId peopleInProjectId =
                 new PeopleInProjectId(id, people.getId());
+
+        myLogger.sendInfo("Пользователь " + people.getLogin() + " покинул " +
+                "проект " + id);
+
         this.peopleInProjectService.removeByIdId(peopleInProjectId);
 
         return ResponseEntity.ok("Пользователь покинул проект");

@@ -2,9 +2,9 @@ package com.AlertSystem.backendSiteDiplom.controllers;
 
 import com.AlertSystem.backendSiteDiplom.dto.PeopleDTO;
 import com.AlertSystem.backendSiteDiplom.models.People;
-import com.AlertSystem.backendSiteDiplom.services.PeopleDetailsService;
 import com.AlertSystem.backendSiteDiplom.services.PeopleService;
 import com.AlertSystem.backendSiteDiplom.util.JWTUtil;
+import com.AlertSystem.backendSiteDiplom.util.MyLogger;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +18,12 @@ public class UserController {
 
     private final JWTUtil jwtUtil;
     private final PeopleService peoplesService;
+    private final MyLogger myLogger;
 
-    public UserController(JWTUtil jwtUtil, PeopleService peoplesService) {
+    public UserController(JWTUtil jwtUtil, PeopleService peoplesService, MyLogger myLogger) {
         this.jwtUtil = jwtUtil;
         this.peoplesService = peoplesService;
+        this.myLogger = myLogger;
     }
 
     @GetMapping("/userInfo")
@@ -42,6 +44,14 @@ public class UserController {
         people.setPassword(peopleDTO.getPassword());
         people.setEmail(peopleDTO.getEmail());
         people.setTelephone(peopleDTO.getTelephone());
+
+        myLogger.sendInfo("Пользователь:\n" +
+                people.getLogin() + "\n" +
+                people.getEmail() + "\n" +
+                people.getTelephone() + "\n" +
+                people.getTgLink() + "\n" +
+                "обновил информацию о себе");
+
         this.peoplesService.save(people);
 
         return ResponseEntity.ok("success");
